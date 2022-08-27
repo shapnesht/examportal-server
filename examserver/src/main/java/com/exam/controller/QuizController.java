@@ -25,8 +25,23 @@ public class QuizController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> getAllQuizzes() {
+    public ResponseEntity<?> getAllActiveQuizzes() {
         return ResponseEntity.ok(quizService.getQuizzes());
+    }
+
+    @GetMapping("/active/")
+    public ResponseEntity<?> getAllQuizzes() {
+        return ResponseEntity.ok(quizService.getActiveQuizzes());
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<?> getQuizByCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(quizService.getQuizzesByCategory(categoryId));
+    }
+
+    @GetMapping("/active/category/{categoryId}")
+    public ResponseEntity<?> getActiveQuizByCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(quizService.getActiveQuizzesByCategory(categoryId));
     }
 
     @GetMapping("/{quizId}")
