@@ -23,6 +23,11 @@ public class UserController {
     @Autowired
     private PasswordEncoder encoder;
 
+    @GetMapping("/test")
+    public String test() {
+        return "Welcome to backend API of Quizzy";
+    }
+
     @PostMapping("/")
     public User createUser(@RequestBody User user) throws Exception {
 

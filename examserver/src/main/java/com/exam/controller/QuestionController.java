@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -49,6 +46,9 @@ public class QuestionController {
         if (questionList.size() > quiz.getNumberOfQuestions()) {
             questionList = questionList.subList(0, (int) (quiz.getNumberOfQuestions() + 1 - 1));
         }
+        questionList.forEach((question -> {
+            question.setAnswer("");
+        }));
         return ResponseEntity.ok(questionList);
     }
 
@@ -62,5 +62,22 @@ public class QuestionController {
     @DeleteMapping("/{questionId}")
     public void  deleteQuestion(@PathVariable("questionId") Long questionId) {
         questionService.deleteQuestionById(questionId);
+    }
+
+    @PostMapping("/evaluate-quiz")
+    public ResponseEntity<?> evaluateQuiz(@RequestBody List<Question> questions) {
+        double marks = 0;
+        int attempted = 0;
+        int correctAnswers= 0;
+
+        double marksPerQuestion = quizService.getQuizById(questions.get(0).getQuiz().getQuizId()).getMaximumMarks() / (double) questions.size();
+
+        for (Question q: questions) {
+            Question qFromDb = questionService.getQuestionById(q.getQuestionId());
+            if (qFromDb.getAnswer().equals(q.getGivenAnswer())) correctAnswers++;
+            if (q.getGivenAnswer() != null) attempted++;
+        }
+        marks = marksPerQuestion * correctAnswers;
+        return ResponseEntity.ok(Map.of("marks", marks, "attempted", attempted, "correctAnswers", correctAnswers));
     }
 }
