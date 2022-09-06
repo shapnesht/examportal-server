@@ -78,6 +78,11 @@ public class QuestionController {
             if (q.getGivenAnswer() != null) attempted++;
         }
         marks = marksPerQuestion * correctAnswers;
-        return ResponseEntity.ok(Map.of("marks", marks, "attempted", attempted, "correctAnswers", correctAnswers));
+        Map<String, Object> mp = new HashMap<>();
+        mp.put("marks", marks);
+        mp.put("attempted", attempted);
+        mp.put("correctAnswers", correctAnswers);
+
+        return ResponseEntity.ok(mp);
     }
 }
